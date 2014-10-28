@@ -46,6 +46,7 @@ definition = {
                age: Integer,
                sexe: ['M','F'],
              }
+
 # Hash of validation
 # Key = type of information
 # Value = regex validating the information

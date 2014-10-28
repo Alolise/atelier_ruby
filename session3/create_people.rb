@@ -5,16 +5,11 @@ def ask_question item, clas
     gets.chomp
 end
 
-def build_person resp, item, clas, person
-  person.store(item, resp)
-  person
-end
-
 def create_person definition
   person={}
   definition.each do |item,clas|
-    temp = ask_question item,clas
-    person = build_person temp, item, clas, person
+    resp = ask_question item,clas
+    person.store(item, resp)
   end
   person
 end

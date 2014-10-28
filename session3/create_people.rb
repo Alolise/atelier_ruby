@@ -5,15 +5,9 @@ def ask_question item, clas
     gets.chomp
 end
 
-# refactored extract method
-def create_people resp, item, clas, pers
-    if resp == ''
-    elsif clas.is_a? Array and clas.include?(resp)
-      pers.store(item, resp)
-    elsif resp.is_a? clas 
-      pers.store(item, resp)
-    end
-    pers
+def create_people resp, item, clas, personne
+  personne.store(item, resp)
+  personne
 end
 
 temp='something'
@@ -22,7 +16,7 @@ personnes=[]
 while temp != ""
   # extract method 
   # don't need declaration
-  pers={}
+  personne={}
   # dont use class for a word
   # the reader is lost
   {
@@ -33,9 +27,9 @@ while temp != ""
     # rename res
     temp = ask_question item,clas
     # rename method we're on building someone
-    pers = create_people temp, item, clas, pers
+    personne = create_people temp, item, clas, personne
   end
-  personnes.push(pers) if pers != {}
+  personnes.push(personne) if personne != {}
 end
 
 puts personnes

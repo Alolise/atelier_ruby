@@ -10,7 +10,7 @@ def create_person definition
   resp = ""
   definition.each do |item,clas|
     resp = ask_question item,clas
-    if resp.empty? == true ;return false; end
+    return false if resp.empty?
     person.store(item, resp)
   end
   return person
@@ -21,7 +21,7 @@ def create_people definition
   response = "temp"
   person = {}
   # use bool
-  while person != false
+  while person
     person = create_person definition
     people.push(person) if person != false
   end

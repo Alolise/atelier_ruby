@@ -5,22 +5,22 @@ def ask_question item, clas
     gets.chomp
 end
 
-def build_personne resp, item, clas, personne
-  personne.store(item, resp)
-  personne
+def build_person resp, item, clas, person
+  person.store(item, resp)
+  person
 end
 
-def create_personne definition
-  personne={}
+def create_person definition
+  person={}
   definition.each do |item,clas|
     temp = ask_question item,clas
-    personne = build_personne temp, item, clas, personne
+    person = build_person temp, item, clas, person
   end
-  personne
+  person
 end
 
 temp='something'
-personnes=[]
+people=[]
 definition = {
                'name' => String,
                'age' => Integer,
@@ -31,8 +31,8 @@ definition = {
 a=3
 while a>0
   a-=1
-  personne = create_personne definition
-  personnes.push(personne) if personne != {}
+  person = create_person definition
+  people.push(person) if person != {}
 end
 
-puts personnes
+puts people

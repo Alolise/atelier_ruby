@@ -6,28 +6,30 @@ def ask_question item, clas
 end
 
 def create_person definition
-  person={}
+  person = {}
+  resp = ""
   definition.each do |item,clas|
     resp = ask_question item,clas
     person.store(item, resp)
   end
-  person
+  return person, resp
 end
 
-temp='something'
-people=[]
+def create_people definition
+  people = []
+  response = "temp"
+  # use bool
+  until response.empty?
+    person, response = create_person definition
+    people.push(person) if person != {}
+  end
+  people
+end
+
 definition = {
                'name' => String,
                'age' => Integer,
                'sexe' => ['M','F'],
              }
 
-# use bool
-a=3
-while a>0
-  a-=1
-  person = create_person definition
-  people.push(person) if person != {}
-end
-
-puts people
+puts create_people definition

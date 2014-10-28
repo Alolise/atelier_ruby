@@ -5,30 +5,33 @@ def ask_question item, clas
     gets.chomp
 end
 
-def create_people resp, item, clas, personne
+def build_personne resp, item, clas, personne
   personne.store(item, resp)
+  personne
+end
+
+def create_personne definition
+  personne={}
+  definition.each do |item,clas|
+    temp = ask_question item,clas
+    personne = build_personne temp, item, clas, personne
+  end
   personne
 end
 
 temp='something'
 personnes=[]
+definition = {
+               'name' => String,
+               'age' => Integer,
+               'sexe' => ['M','F'],
+             }
+
 # use bool
-while temp != ""
-  # extract method 
-  # don't need declaration
-  personne={}
-  # dont use class for a word
-  # the reader is lost
-  {
-    'name' => String,
-    'age' => Integer,
-    'sexe' => ['M','F'],
-  }.each do |item,clas|
-    # rename res
-    temp = ask_question item,clas
-    # rename method we're on building someone
-    personne = create_people temp, item, clas, personne
-  end
+a=3
+while a>0
+  a-=1
+  personne = create_personne definition
   personnes.push(personne) if personne != {}
 end
 

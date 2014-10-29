@@ -1,7 +1,7 @@
 Version with mongodb
 ====================
 
-#Install Mongo
+###Install Mongo
 Debian : 
 > aptitude install mongodb-server
 

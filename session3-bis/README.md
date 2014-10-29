@@ -7,7 +7,9 @@ Debian :
 
 Centos :
 > yum install mongodb
+
 ###Check Mongo
+
 > $ ruby create\_people\_mongo.rb
 
 > Please give name (String): 

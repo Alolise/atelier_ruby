@@ -2,7 +2,7 @@ Install Mongo
 =============
 
 Debian : 
- aptitude install mongodb-server
+> aptitude install mongodb-server
 
 Centos :
- yum install mongodb
+> yum install mongodb

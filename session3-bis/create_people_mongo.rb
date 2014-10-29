@@ -71,9 +71,6 @@ validation = {
 
 fields = {
                 _id: 0,
-                name: 1,
-                age: 1,
-                sexe: 1,
              }
 # Main
 puts coll.find({},{fields: fields}).to_a

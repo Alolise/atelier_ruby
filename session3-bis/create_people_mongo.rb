@@ -5,13 +5,14 @@ require 'yaml'
 require 'pp'
 include Mongo
 
-settings = YAML::load_file "./config.conf"
+settings = YAML::load_file ARGV[0]
 
 host = 'localhost'
 port = MongoClient::DEFAULT_PORT
 
 client = MongoClient.new(host, port)
 db = client.db('create_people')
+db.authenticate
 coll = db.create_collection('people')
 
 # Ask the user questions about person (Name, age, etc...)

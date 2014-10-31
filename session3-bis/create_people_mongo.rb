@@ -6,13 +6,14 @@ require 'pp'
 include Mongo
 
 settings = YAML::load_file "./config.conf"
-
-host = 'localhost'
-port = MongoClient::DEFAULT_PORT
-
+dbconf = settings['database']
+host = dbconf['host'] || 'localhost'
+port = dbconf['port'] || MongoClient::DEFAULT_PORT
 client = MongoClient.new(host, port)
-db = client.db('create_people')
-coll = db.create_collection('people')
+db = client.db(dbconf['base'])
+coll = db.create_collection(dbconf['coll'])
+
+
 
 # Ask the user questions about person (Name, age, etc...)
 # Validate answer by checking validation rules

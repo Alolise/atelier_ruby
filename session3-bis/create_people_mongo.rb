@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 
 require 'mongo'
+require 'yaml'
 require 'pp'
 include Mongo
+
+settings = YAML::load_file "./config.conf"
 
 host = 'localhost'
 port = MongoClient::DEFAULT_PORT

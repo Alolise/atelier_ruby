@@ -6,9 +6,13 @@ require 'pp'
 include Mongo
 
 settings = YAML::load_file ARGV[0]
+dbconf = settings['database']
+host = dbconf['host'] || 'localhost'
+port = dbconf['port'] || MongoClient::DEFAULT_PORT
+client = MongoClient.new(host, port)
+db = client.db(dbconf['base'])
+coll = db.create_collection(dbconf['coll'])
 
-host = 'localhost'
-port = MongoClient::DEFAULT_PORT
 
 client = MongoClient.new(host, port)
 db = client.db('create_people')

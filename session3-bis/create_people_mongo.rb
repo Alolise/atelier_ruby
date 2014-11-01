@@ -5,19 +5,18 @@ require 'yaml'
 require 'pp'
 include Mongo
 
-settings = YAML::load_file ARGV[0]
-dbconf = settings['database']
-host = dbconf['host'] || 'localhost'
-port = dbconf['port'] || MongoClient::DEFAULT_PORT
-client = MongoClient.new(host, port)
-db = client.db(dbconf['base'])
-coll = db.create_collection(dbconf['coll'])
+def connect_mongo dbconf
+  base, collection, host, password, port, user = Hash[dbconf.sort].values
+#  printf "%s %s %s %s %s \n" % Hash[dbconf.sort].values
+  #MongoClient::DEFAULT_PORT
+  client = MongoClient.new( host, port )
+  db = client.db( base )
+  db.authenticate( user, password )
+  #coll = db.create_collection( collection ) if db[ collection ]
+  coll = db.collection( collection )
+  return client, db, coll
+end
 
-
-client = MongoClient.new(host, port)
-db = client.db('create_people')
-db.authenticate
-coll = db.create_collection('people')
 
 # Ask the user questions about person (Name, age, etc...)
 # Validate answer by checking validation rules
@@ -81,6 +80,11 @@ fields = {
                 _id: 0,
              }
 # Main
+
+settings = YAML::load_file ARGV[0]
+
+client, db, coll = connect_mongo settings['database']
+
 puts coll.find({},{fields: fields}).to_a
 #puts coll.find({"name" => "Rachida"},{ "_id": 0} ).to_a
 puts create_people definition, validation, coll

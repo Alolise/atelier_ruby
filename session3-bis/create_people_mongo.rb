@@ -7,7 +7,7 @@ include Mongo
 
 def connect_mongo dbconf
   base, collection, host, password, port, user = Hash[dbconf.sort].values
-#  printf "%s %s %s %s %s \n" % Hash[dbconf.sort].values
+  #printf "%s %s %s %s %s \n" % Hash[dbconf.sort].values
   #MongoClient::DEFAULT_PORT
   client = MongoClient.new( host, port )
   db = client.db( base )
@@ -58,6 +58,27 @@ def create_people definition, validation, coll
   people
 end
 
+def find_someone definition, validation
+  person = {}
+  definition.each do |item,clas|
+    resp = ask_question item, clas, validation
+    next if resp.empty?
+    person.store(item, resp)
+  end
+  return person
+end
+
+def find_people definition, validation, coll, fields
+  person = {}
+  more = true
+  while more
+    person = find_someone definition, validation
+    puts coll.find( person, {fields: fields} ).to_a
+    puts "More ? y/n "
+    more = false if gets.chomp == "n"
+  end
+end
+
 # Hash of definition
 # Key = type of information
 # Value = class of information
@@ -82,9 +103,9 @@ fields = {
 # Main
 
 settings = YAML::load_file ARGV[0]
+ARGV.clear
 
 client, db, coll = connect_mongo settings['database']
-
-puts coll.find({},{fields: fields}).to_a
-#puts coll.find({"name" => "Rachida"},{ "_id": 0} ).to_a
 puts create_people definition, validation, coll
+puts coll.find({},{fields: fields}).to_a
+puts find_people definition, validation, coll, fields

@@ -5,6 +5,14 @@ require 'yaml'
 require 'pp'
 include Mongo
 
+def usage
+  return "
+  usage: #{$PROGRAM_NAME} ConfigFile
+
+    Creation of people, the configfile configure the mongo connection
+  "
+end
+
 def connect_mongo dbconf
   base, collection, host, password, port, user = Hash[dbconf.sort].values
   #printf "%s %s %s %s %s \n" % Hash[dbconf.sort].values
@@ -21,12 +29,12 @@ end
 # Ask the user questions about person (Name, age, etc...)
 # Validate answer by checking validation rules
 # Return the validated answer or void
-def ask_question item, clas, validation
+def ask_question item, clas, definition
   valid = false
   while valid == false
     print "Please give %s (%s): " % [item, clas]
     response = gets.chomp
-    valid = true if validation[item].match(response) or response.empty?
+    valid = true if definition[item][1].match(response) or response.empty?
   end
   return response
 end
@@ -34,10 +42,10 @@ end
 # Create the Hash person
 # Return false when one entry is void
 # Return the hash person otherwise
-def create_person definition, validation
+def create_person definition
   person = {}
-  definition.each do |item,clas|
-    resp = ask_question item, clas, validation
+  definition.each do |item,array|
+    resp = ask_question item, array[0], definition
     return false if resp.empty?
     person.store(item, resp)
   end
@@ -46,66 +54,58 @@ end
 
 # Create an array of persons called people
 # Return the array people
-def create_people definition, validation, coll
+def create_people definition, coll
   people = []
   person = {}
 
   while person
-    person = create_person definition, validation
+    person = create_person definition
     coll.insert(person) if person != false
     people.push(person) if person != false
   end
   people
 end
 
-def find_someone definition, validation
+def find_someone definition
   person = {}
-  definition.each do |item,clas|
-    resp = ask_question item, clas, validation
+  definition.each do |item,array|
+    resp = ask_question item, array[0], definition
     next if resp.empty?
     person.store(item, resp)
   end
   return person
 end
 
-def find_people definition, validation, coll, fields
+def find_people definition, coll, fields
   person = {}
   more = true
   while more
-    person = find_someone definition, validation
+    person = find_someone definition
     puts coll.find( person, {fields: fields} ).to_a
     puts "More ? y/n "
     more = false if gets.chomp == "n"
   end
 end
 
-# Hash of definition
+# Hash of table of definition and validation
 # Key = type of information
 # Value = class of information
-definition = {
-               name: String,
-               age: Integer,
-               sexe: ['M','F'],
-             }
-
-# Hash of validation
-# Key = type of information
 # Value = regex validating the information
-validation = {
-                name: /[a-zA-Z\-\s]+/,
-                age: /\d+/,
-                sexe: /M|F/,
+definition = {
+               name: [ String, /[a-zA-Z\-\s]+/ ],
+               age: [ Integer, /\d+/ ],
+               sexe: [ ['M','F'], /M|F/ ],
              }
 
 fields = {
                 _id: 0,
              }
 # Main
-
-settings = YAML::load_file ARGV[0]
+file = ARGV[0] or abort usage
+settings = YAML::load_file( file )
 ARGV.clear
 
 client, db, coll = connect_mongo settings['database']
-puts create_people definition, validation, coll
+puts create_people definition, coll
 puts coll.find({},{fields: fields}).to_a
-puts find_people definition, validation, coll, fields
+puts find_people definition, coll, fields

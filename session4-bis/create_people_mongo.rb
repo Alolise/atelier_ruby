@@ -29,12 +29,13 @@ end
 # Ask the user questions about person (Name, age, etc...)
 # Validate answer by checking validation rules
 # Return the validated answer or void
-def ask_question item, clas, definition
+def ask_question item, param
   valid = false
   while valid == false
-    print "Please give %s (%s): " % [item, clas]
+    print "Please give %s (%s - %s): " % [item, param['type'], param['desc']]
     response = gets.chomp
-    valid = true if definition[item][1].match(response) or response.empty?
+    validation = eval param['validation']
+    valid = true if validation.match(response) or response.empty?
   end
   return response
 end
@@ -44,8 +45,8 @@ end
 # Return the hash person otherwise
 def create_person definition
   person = {}
-  definition.each do |item,array|
-    resp = ask_question item, array[0], definition
+  definition.each do |item,param|
+    resp = ask_question item, param
     return false if resp.empty?
     person.store(item, resp)
   end
@@ -68,8 +69,8 @@ end
 
 def find_someone definition
   person = {}
-  definition.each do |item,array|
-    resp = ask_question item, array[0], definition
+  definition.each do |item,param|
+    resp = ask_question item, param
     next if resp.empty?
     person.store(item, resp)
   end
@@ -87,25 +88,19 @@ def find_people definition, coll, fields
   end
 end
 
-# Hash of table of definition and validation
-# Key = type of information
-# Value = class of information
-# Value = regex validating the information
-definition = {
-               name: [ String, /[a-zA-Z\-\s]+/ ],
-               age: [ Integer, /\d+/ ],
-               sexe: [ ['M','F'], /M|F/ ],
-             }
+# next in configfile
+fields = { _id: 0, }
 
-fields = {
-                _id: 0,
-             }
+
 # Main
 file = ARGV[0] or abort usage
 settings = YAML::load_file( file )
 ARGV.clear
 
 client, db, coll = connect_mongo settings['database']
-puts create_people definition, coll
+
+definition_f = settings['definition']
+
+puts create_people definition_f, coll
 puts coll.find({},{fields: fields}).to_a
-puts find_people definition, coll, fields
+puts find_people definition_f, coll, fields

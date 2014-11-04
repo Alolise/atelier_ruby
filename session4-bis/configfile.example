@@ -1,0 +1,29 @@
+database:
+  host: localhost
+  port: 27017
+  base: create_people
+  collection: people
+  user: admin
+  password: password
+
+definition:
+  nom:
+    type: String
+    desc: "Nom complet"
+    validation: /[a-zA-Z\-\s]+/
+    default: "John Doe"
+  age:
+    type: Integer
+    desc: "Age en années entières"
+    validation: /\d{1,3}/
+    default: "20"
+  sex:
+    type: ["M","F"]
+    desc: "Genre"
+    validation: /M|m|F|f/
+    default: "M"
+  size:
+    type: Integer
+    desc: "Taille en centimètre"
+    validation: /\d+/
+    default: "170"

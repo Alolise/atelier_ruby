@@ -1,0 +1,40 @@
+database:
+  host: localhost
+  port: 27017
+  base: publish_channels
+  collection: channels
+  user: admin
+  password: password
+
+definition:
+  nom:
+    type: String
+    desc: "Nom complet"
+    validation: /[a-zA-Z\-\.\_\s]+/
+    default: "Site blah-blah.com "
+  url:
+    type: String
+    desc: "Url du site ou adresse mail"
+    validation: /[a-zA-Z\-\.\_\:\/\-\@\s]+/
+    default: "20"
+  type:
+    type: ["Web","Mail"]
+    desc: "Type de média"
+    validation: /Web|Mail/
+    default: "Web"
+  login:
+    type: String
+    desc: "Identifiant du site (login)"
+    validation: /[\w\-\_\@\.]+/
+    default: "admin"
+  password:
+    type: String
+    desc: "Mot de passe de l'identifiant du site"
+    validation: /[\w\-\_\@\.]+/
+    default: "s3cr3te"
+#  size:
+#    type: Integer
+#    desc: "Taille en centimètre"
+#    validation: /\d+/
+#    default: "170"
+#    validation: /\d{1,3}/
